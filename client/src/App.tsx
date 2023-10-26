@@ -1,7 +1,6 @@
 import "./App.css";
 import { Launch } from "./types";
-import starryNightImage from "./assets/starry-night.jpeg";
-import LaunchStatus from "./components/launch-status/LaunchStatus";
+import LaunchDetailCard from "./components/launch-detail-card/LaunchDetailCard";
 
 const placeholderLaunchInfo: Launch[] = [
   {
@@ -29,27 +28,7 @@ function App() {
   return (
     <section>
       {placeholderLaunchInfo.map((launch) => {
-        return (
-          <article>
-            <div>
-              <img src={starryNightImage} alt="Starry night sky" />
-            </div>
-            <div>
-              <h2>{launch.launchName}</h2>
-            </div>
-            <LaunchStatus success={launch.success} />
-            {/* TODO: format this date */}
-            <div>{launch.date}</div>
-            <div>{launch.details}</div>
-            <div>
-              <h3>Details</h3>
-              <ul>
-                <li>Rocket Name: {launch.rocketName}</li>
-                <li>Launchpad Name: {launch.launchpadName}</li>
-              </ul>
-            </div>
-          </article>
-        );
+        return <LaunchDetailCard key={launch.id} launch={launch} />;
       })}
     </section>
   );
