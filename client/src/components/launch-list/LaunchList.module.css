@@ -1,0 +1,14 @@
+.card-list {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+}
+
+.error-text {
+    padding: 2rem;
+    font-size: 2rem;
+}
