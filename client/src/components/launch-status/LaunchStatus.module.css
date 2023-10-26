@@ -1,0 +1,22 @@
+.card-status-container {
+    display: flex;
+    justify-content: right;
+    align-self: center;
+    padding-right: var(--padding); 
+    padding-top: 0.5rem;
+}
+
+p.card-status {
+    background: hsl(0, 5%, 35%);
+    color: white;
+    border-radius: 99999px;
+    padding: 0.1rem 0.6rem 0.1rem 0.6rem;
+}
+
+p.card-status--success {
+    background: hsl(121,66%,30%);
+}
+
+p.card-status--failure {
+    background: hsl(0,96%,55%);
+}

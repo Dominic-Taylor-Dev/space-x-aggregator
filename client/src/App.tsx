@@ -1,6 +1,7 @@
 import "./App.css";
 import { Launch } from "./types";
 import starryNightImage from "./assets/starry-night.jpeg";
+import LaunchStatus from "./components/launch-status/LaunchStatus";
 
 const placeholderLaunchInfo: Launch[] = [
   {
@@ -10,7 +11,7 @@ const placeholderLaunchInfo: Launch[] = [
     launchpadName: "Kwajalein Atoll",
     details: "Engine failure at 33 seconds and loss of vehicle",
     date: "2006-03-24T22:30:00.000Z",
-    success: false,
+    success: true,
   },
   {
     id: "5eb87cdaffd86e000604b32b",
@@ -36,12 +37,7 @@ function App() {
             <div>
               <h2>{launch.launchName}</h2>
             </div>
-            <div>
-              <p>
-                {/* TODO: map the success boolean to correct word */}
-                {launch.success}
-              </p>
-            </div>
+            <LaunchStatus success={launch.success} />
             {/* TODO: format this date */}
             <div>{launch.date}</div>
             <div>{launch.details}</div>
