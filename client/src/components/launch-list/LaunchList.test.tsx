@@ -62,6 +62,25 @@ jest.mock("../launch-detail-card/LaunchDetailCard", () => {
   };
 });
 
+jest.mock("../spinner/Spinner", () => {
+  return {
+    __esModule: true,
+    default: () => {
+      return <div data-testid={"mock-spinner"} />;
+    },
+  };
+});
+
+it("should render a loading spinner while fetching data", async () => {
+  mockApiResponseStatusCode = 200;
+  mockApiResponseData = [];
+
+  render(<LaunchList />);
+
+  const loadingSpinner = screen.getByTestId("mock-spinner");
+  expect(loadingSpinner).toBeInTheDocument();
+});
+
 it("should render message informing user that no launch data has been found in event of a successful, but empty, API response", async () => {
   mockApiResponseStatusCode = 200;
   mockApiResponseData = [];
