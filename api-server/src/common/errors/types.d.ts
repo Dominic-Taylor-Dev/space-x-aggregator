@@ -1,0 +1,3 @@
+type ErrorData = {
+  message: string;
+};
