@@ -1,0 +1,40 @@
+version: "3"
+services:
+  api-server:
+    build: 
+      context: ./api-server
+      target: production
+    image: api-server
+    container_name: api-server
+    # this is about mapping to port on the host so is useful if we wanted to connect from outside Docker network - although in this case it's only really for the use of the UI client
+    ports:
+      - "4000:4000"
+    # this is about exposing a port purely within the Docker network
+    expose:
+      - "4000"
+    networks:
+      - space-x-aggregator
+    environment:
+      # not technically needed as I have set 4000 as the default anyway, 
+      # but listing in order to document centrally
+      PORT: "4000"
+      SPACE_X_API_BASE_URL: "https://api.spacexdata.com/v4"
+
+  react-client:
+    build: 
+      context: ./client
+      target: production-preview
+    image: client
+    container_name: client
+    ports:
+      - "3000:4173"
+    expose:
+      - "3000"
+    networks:
+      - space-x-aggregator
+    environment:
+      PORT: "3000"
+
+networks:
+  space-x-aggregator:
+    name: space-x-aggregator-network
