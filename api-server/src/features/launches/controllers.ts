@@ -1,6 +1,7 @@
 import axios from "axios";
 import { Response, Request } from "express";
 import { getSpaceXApiBaseUrl } from "../../config/config";
+import { log } from "../../common/logging";
 
 const spaceXBaseApi = getSpaceXApiBaseUrl();
 
@@ -9,6 +10,7 @@ export const getAllLaunches = async (
   res: Response
 ): Promise<void> => {
   try {
+    log.info("Attempting to retreive data from SpaceX API");
     const [launchesResponse, rocketsResponse, launchpadsResponse] =
       await Promise.all([
         axios.get<LaunchData[]>(spaceXBaseApi + "/launches"),
@@ -36,6 +38,7 @@ export const getAllLaunches = async (
     );
 
     const apiResult: LaunchesApiResult = { results: simplifiedLaunches };
+    log.info("Returning successful response to user");
     res.json(apiResult);
   } catch (error) {
     const errorData: ErrorData = {
