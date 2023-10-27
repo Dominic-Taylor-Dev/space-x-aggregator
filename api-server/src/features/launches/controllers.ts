@@ -2,6 +2,7 @@ import axios from "axios";
 import { Response, Request } from "express";
 import { getSpaceXApiBaseUrl } from "../../config/config";
 import { log } from "../../common/logging";
+import { errorReferenceCode } from "../../common/errors";
 
 const spaceXBaseApi = getSpaceXApiBaseUrl();
 
@@ -41,8 +42,15 @@ export const getAllLaunches = async (
     log.info("Returning successful response to user");
     res.json(apiResult);
   } catch (error) {
+    const referenceCode = errorReferenceCode();
+
+    log.error(
+      `An error occurred while fetching data from SpaceX API. Returning error response to user with code: ${referenceCode}`
+    );
+
     const errorData: ErrorData = {
       message: "An error occurred while fetching data from SpaceX API.",
+      referenceCode,
     };
 
     res.status(500).json(errorData);

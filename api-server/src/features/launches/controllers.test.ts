@@ -6,6 +6,11 @@ import { getSpaceXApiBaseUrl } from "../../config/config";
 
 const spaceXBaseApi = getSpaceXApiBaseUrl();
 
+const mockErrorReference = "mock-error-ref";
+jest.mock("../../common/errors", () => ({
+  errorReferenceCode: jest.fn(() => mockErrorReference),
+}));
+
 jest.mock("axios");
 const launchesSuccessResponse: LaunchData[] = [
   {
@@ -107,6 +112,7 @@ describe("GET /launches", () => {
     expect(response.header["content-type"]).toMatch(/json/);
     expect(response.body).toEqual({
       message: "An error occurred while fetching data from SpaceX API.",
+      referenceCode: mockErrorReference,
     });
   });
 });
