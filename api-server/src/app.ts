@@ -3,6 +3,7 @@ import express, { Router } from "express";
 import cors from "cors";
 import { launchesRouter } from "./features/launches";
 import { httpLoggingMiddleware } from "./common/logging";
+import { getHealth } from "./common/healthcheck";
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -12,6 +13,8 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 app.use(httpLoggingMiddleware);
+
+app.use("/health", getHealth);
 
 const RouterV1 = Router();
 app.use("/api/v1", RouterV1);
