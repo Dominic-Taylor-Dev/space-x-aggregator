@@ -97,6 +97,12 @@ The tests in this project do not need the app to be running. To run them, you ne
   npm run test
 ```
 
+End-to-end tests exist only for the React client. These use Cypress and can be run from within the `client` directory with:
+
+```bash
+  npm run test:cypress
+```
+
 ## Directory Structure
 
 The project is split into two halves: `api-server`, which is the part which calls the SpaceX API and `client` which is a React (Vite) app which renders the results as cards.

@@ -50,7 +50,7 @@ const LaunchList: React.FC = () => {
   }
 
   return (
-    <section className={style["card-list"]}>
+    <section className={style["card-list"]} data-cy="card-list">
       {launches.map((launch) => {
         return <LaunchDetailCard key={launch.id} launch={launch} />;
       })}
