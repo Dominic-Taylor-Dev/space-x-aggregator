@@ -1,3 +1,10 @@
+type SpaceXQueryApiBody = {
+  query: {};
+  options: {
+    limit?: number;
+  };
+};
+
 type LaunchData = {
   id: string;
   name: string;
@@ -8,7 +15,9 @@ type LaunchData = {
   success: boolean;
 };
 
-type LaunchDataResponse = LaunchData[];
+type LaunchDataResponse = {
+  docs: LaunchData[];
+};
 
 type RocketData = {
   id: string;

@@ -40,7 +40,7 @@ jest.mock("./space-x-service", () => {
       if (isLaunchResponseSuccess) {
         return Promise.resolve({
           status: 200,
-          data: launchesSuccessResponseData,
+          data: { docs: launchesSuccessResponseData },
         });
       }
 

@@ -24,7 +24,7 @@ export const getAllLaunches = async (
       launchpadsResponse.data.map((launchpad) => [launchpad.id, launchpad])
     );
 
-    const simplifiedLaunches: Launch[] = launchesResponse.data.map(
+    const simplifiedLaunches: Launch[] = launchesResponse.data.docs.map(
       (launch) => ({
         id: launch.id,
         launchName: launch.name,

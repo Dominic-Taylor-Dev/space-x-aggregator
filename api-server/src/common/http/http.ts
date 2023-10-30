@@ -49,6 +49,16 @@ export class Http {
       headers,
     });
 
+    http.interceptors.request.use((request) => {
+      log.http({
+        type: "outbound",
+        url: request.url,
+        method: request.method,
+        body: request.data,
+      });
+      return request;
+    });
+
     http.interceptors.response.use(
       (response) => response,
       (error) => Http.handleError(error)

@@ -50,6 +50,7 @@ export const httpLoggingMiddleware = (
   next: NextFunction
 ) => {
   log.http({
+    type: "inbound",
     url: req.url,
     method: req.method,
   });
