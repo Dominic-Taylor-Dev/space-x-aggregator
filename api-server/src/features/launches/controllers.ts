@@ -38,7 +38,10 @@ export const getAllLaunches = async (
       })
     );
 
-    const apiResult: LaunchesApiResult = { results: simplifiedLaunches };
+    // Limit the response to the first 10 launches
+    const first10Launches = simplifiedLaunches.slice(0, 10);
+
+    const apiResult: LaunchesApiResult = { results: first10Launches };
     log.info("Returning successful response to user");
     res.json(apiResult);
   } catch (error) {

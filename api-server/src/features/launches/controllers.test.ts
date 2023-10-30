@@ -84,6 +84,66 @@ describe("GET /launches", () => {
     expect(response.body).toEqual(expectedResponse);
   });
 
+  it("should return a successful response when all calls to SpaceX API succeed, with 15 launches returned, but limit own response to 10 records", async () => {
+    const launchesResponse = new Array(15).fill(launchesSuccessResponse[0]);
+    (axios.get as jest.Mock).mockImplementation((url) => {
+      switch (url) {
+        case `${spaceXBaseApi}/launches`:
+          return Promise.resolve({
+            status: 200,
+            data: launchesResponse,
+          });
+        case `${spaceXBaseApi}/rockets`:
+          return Promise.resolve({
+            status: 200,
+            data: rocketsSuccessResponse,
+          });
+        case `${spaceXBaseApi}/launchpads`:
+          return Promise.resolve({
+            status: 200,
+            data: launchpadSuccessResponse,
+          });
+        default:
+          return Promise.reject(new Error("mock not found"));
+      }
+    });
+
+    const response = await request(app).get("/launches");
+
+    expect(response.status).toBe(200);
+    expect(response.body.results.length).toEqual(10);
+  });
+
+  it("should return a successful response when all calls to SpaceX API succeed, and return same number of records as provided by SpaceX API when there are 10 or fewer", async () => {
+    const launchesResponse = new Array(3).fill(launchesSuccessResponse[0]);
+    (axios.get as jest.Mock).mockImplementation((url) => {
+      switch (url) {
+        case `${spaceXBaseApi}/launches`:
+          return Promise.resolve({
+            status: 200,
+            data: launchesResponse,
+          });
+        case `${spaceXBaseApi}/rockets`:
+          return Promise.resolve({
+            status: 200,
+            data: rocketsSuccessResponse,
+          });
+        case `${spaceXBaseApi}/launchpads`:
+          return Promise.resolve({
+            status: 200,
+            data: launchpadSuccessResponse,
+          });
+        default:
+          return Promise.reject(new Error("mock not found"));
+      }
+    });
+
+    const response = await request(app).get("/launches");
+
+    expect(response.status).toBe(200);
+    expect(response.body.results.length).toEqual(3);
+  });
+
   it("should return an error (500) response when a single call to SpaceX API fails", async () => {
     (axios.get as jest.Mock).mockImplementation((url) => {
       switch (url) {

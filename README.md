@@ -34,6 +34,8 @@ There is only one route on the backend: `/api/v1/launches`. This returns `200` i
 }
 ```
 
+Note that this will only ever return a maximum of 10 responses (hardcoded into backend).
+
 There is a single error response which is `500`. In the case of an error, the response payload will take the form:
 ```
 {
