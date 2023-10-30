@@ -1,4 +1,3 @@
-import axios from "axios";
 import { Response, Request } from "express";
 import { log } from "../../common/logging";
 import { errorReferenceCode } from "../../common/errors";
