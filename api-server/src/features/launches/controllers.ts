@@ -1,10 +1,12 @@
 import axios from "axios";
 import { Response, Request } from "express";
-import { getSpaceXApiBaseUrl } from "../../config/config";
 import { log } from "../../common/logging";
 import { errorReferenceCode } from "../../common/errors";
-
-const spaceXBaseApi = getSpaceXApiBaseUrl();
+import {
+  getLaunchData,
+  getLaunchpadData,
+  getRocketData,
+} from "./space-x-service";
 
 export const getAllLaunches = async (
   _req: Request,
@@ -13,11 +15,7 @@ export const getAllLaunches = async (
   try {
     log.info("Attempting to retreive data from SpaceX API");
     const [launchesResponse, rocketsResponse, launchpadsResponse] =
-      await Promise.all([
-        axios.get<LaunchData[]>(spaceXBaseApi + "/launches"),
-        axios.get<RocketData[]>(spaceXBaseApi + "/rockets"),
-        axios.get<LaunchpadData[]>(spaceXBaseApi + "/launchpads"),
-      ]);
+      await Promise.all([getLaunchData(), getRocketData(), getLaunchpadData()]);
 
     const rocketsMap = new Map(
       rocketsResponse.data.map((rocket) => [rocket.id, rocket])

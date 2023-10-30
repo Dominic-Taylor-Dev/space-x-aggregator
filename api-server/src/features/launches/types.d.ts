@@ -8,15 +8,21 @@ type LaunchData = {
   success: boolean;
 };
 
+type LaunchDataResponse = LaunchData[];
+
 type RocketData = {
   id: string;
   name: string;
 };
 
+type RocketDataResponse = RocketData[];
+
 type LaunchpadData = {
   id: string;
   name: string;
 };
+
+type LaunchpadDataResponse = LaunchpadData[];
 
 type Launch = {
   id: string;

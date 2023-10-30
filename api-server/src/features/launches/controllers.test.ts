@@ -1,18 +1,13 @@
-import axios from "axios";
 import request from "supertest";
 import express from "express";
 import { getAllLaunches } from "./controllers";
-import { getSpaceXApiBaseUrl } from "../../config/config";
-
-const spaceXBaseApi = getSpaceXApiBaseUrl();
 
 const mockErrorReference = "mock-error-ref";
 jest.mock("../../common/errors", () => ({
   errorReferenceCode: jest.fn(() => mockErrorReference),
 }));
 
-jest.mock("axios");
-const launchesSuccessResponse: LaunchData[] = [
+const singleLaunchesSuccessResponse: LaunchData[] = [
   {
     id: "1",
     name: "Launch 1",
@@ -23,6 +18,9 @@ const launchesSuccessResponse: LaunchData[] = [
     success: true,
   },
 ];
+let isLaunchResponseSuccess: boolean;
+let launchesSuccessResponseData: LaunchData[];
+
 const rocketsSuccessResponse: RocketData[] = [
   {
     id: "1",
@@ -36,33 +34,37 @@ const launchpadSuccessResponse: RocketData[] = [
   },
 ];
 
+jest.mock("./space-x-service", () => {
+  return {
+    getLaunchData: jest.fn(() => {
+      if (isLaunchResponseSuccess) {
+        return Promise.resolve({
+          status: 200,
+          data: launchesSuccessResponseData,
+        });
+      }
+
+      return Promise.reject();
+    }),
+    getRocketData: jest.fn(() =>
+      Promise.resolve({ status: 200, data: rocketsSuccessResponse })
+    ),
+    getLaunchpadData: jest.fn(() =>
+      Promise.resolve({ status: 200, data: launchpadSuccessResponse })
+    ),
+  };
+});
+
 const app = express();
 app.get("/launches", getAllLaunches);
 
 describe("GET /launches", () => {
-  it("should return a successful response when all calls to SpaceX API succeed", async () => {
-    (axios.get as jest.Mock).mockImplementation((url) => {
-      switch (url) {
-        case `${spaceXBaseApi}/launches`:
-          return Promise.resolve({
-            status: 200,
-            data: launchesSuccessResponse,
-          });
-        case `${spaceXBaseApi}/rockets`:
-          return Promise.resolve({
-            status: 200,
-            data: rocketsSuccessResponse,
-          });
-        case `${spaceXBaseApi}/launchpads`:
-          return Promise.resolve({
-            status: 200,
-            data: launchpadSuccessResponse,
-          });
-        default:
-          return Promise.reject(new Error("mock not found"));
-      }
-    });
+  beforeEach(() => {
+    isLaunchResponseSuccess = true;
+    launchesSuccessResponseData = singleLaunchesSuccessResponse;
+  });
 
+  it("should return a successful response when all calls to SpaceX API succeed", async () => {
     const response = await request(app).get("/launches");
 
     expect(response.status).toBe(200);
@@ -85,28 +87,11 @@ describe("GET /launches", () => {
   });
 
   it("should return a successful response when all calls to SpaceX API succeed, with 15 launches returned, but limit own response to 10 records", async () => {
-    const launchesResponse = new Array(15).fill(launchesSuccessResponse[0]);
-    (axios.get as jest.Mock).mockImplementation((url) => {
-      switch (url) {
-        case `${spaceXBaseApi}/launches`:
-          return Promise.resolve({
-            status: 200,
-            data: launchesResponse,
-          });
-        case `${spaceXBaseApi}/rockets`:
-          return Promise.resolve({
-            status: 200,
-            data: rocketsSuccessResponse,
-          });
-        case `${spaceXBaseApi}/launchpads`:
-          return Promise.resolve({
-            status: 200,
-            data: launchpadSuccessResponse,
-          });
-        default:
-          return Promise.reject(new Error("mock not found"));
-      }
-    });
+    const launchesResponse = new Array(15).fill(
+      singleLaunchesSuccessResponse[0]
+    );
+    isLaunchResponseSuccess = true;
+    launchesSuccessResponseData = launchesResponse;
 
     const response = await request(app).get("/launches");
 
@@ -115,28 +100,11 @@ describe("GET /launches", () => {
   });
 
   it("should return a successful response when all calls to SpaceX API succeed, and return same number of records as provided by SpaceX API when there are 10 or fewer", async () => {
-    const launchesResponse = new Array(3).fill(launchesSuccessResponse[0]);
-    (axios.get as jest.Mock).mockImplementation((url) => {
-      switch (url) {
-        case `${spaceXBaseApi}/launches`:
-          return Promise.resolve({
-            status: 200,
-            data: launchesResponse,
-          });
-        case `${spaceXBaseApi}/rockets`:
-          return Promise.resolve({
-            status: 200,
-            data: rocketsSuccessResponse,
-          });
-        case `${spaceXBaseApi}/launchpads`:
-          return Promise.resolve({
-            status: 200,
-            data: launchpadSuccessResponse,
-          });
-        default:
-          return Promise.reject(new Error("mock not found"));
-      }
-    });
+    const launchesResponse = new Array(3).fill(
+      singleLaunchesSuccessResponse[0]
+    );
+    isLaunchResponseSuccess = true;
+    launchesSuccessResponseData = launchesResponse;
 
     const response = await request(app).get("/launches");
 
@@ -145,26 +113,7 @@ describe("GET /launches", () => {
   });
 
   it("should return an error (500) response when a single call to SpaceX API fails", async () => {
-    (axios.get as jest.Mock).mockImplementation((url) => {
-      switch (url) {
-        case "https://api.spacexdata.com/v4/launches":
-          return Promise.resolve({
-            status: 200,
-            data: launchesSuccessResponse,
-          });
-        case "https://api.spacexdata.com/v4/rockets":
-          return Promise.resolve({
-            status: 200,
-            data: rocketsSuccessResponse,
-          });
-        case "https://api.spacexdata.com/v4/launchpads":
-          return Promise.resolve({
-            status: 500,
-          });
-        default:
-          return Promise.reject(new Error("mock not found"));
-      }
-    });
+    isLaunchResponseSuccess = false;
 
     const response = await request(app).get("/launches");
 
