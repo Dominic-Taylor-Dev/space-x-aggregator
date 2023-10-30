@@ -2,6 +2,7 @@ type SpaceXQueryApiBody = {
   query: {};
   options: {
     limit?: number;
+    select?: any;
   };
 };
 
